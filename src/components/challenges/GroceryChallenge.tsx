@@ -29,9 +29,11 @@ interface GroceryItem {
 interface GroceryChallengeProps {
   onComplete: (data: any, score: number) => void;
   householdSize: number;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function GroceryChallenge({ onComplete, householdSize }: GroceryChallengeProps) {
+export default function GroceryChallenge({ onComplete, householdSize, currentLeftover, blueprint }: GroceryChallengeProps) {
   const [step, setStep] = useState(1);
   const [meals, setMeals] = useState({
     breakfast: ['', '', '', '', ''],

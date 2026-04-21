@@ -31,9 +31,11 @@ interface ChildcareChallengeProps {
   onComplete: (data: any, score: number) => void;
   monthlyIncome: number;
   children: { name: string; age: number }[];
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function ChildcareChallenge({ onComplete, monthlyIncome, children }: ChildcareChallengeProps) {
+export default function ChildcareChallenge({ onComplete, monthlyIncome, children, currentLeftover, blueprint }: ChildcareChallengeProps) {
   const childrenCount = children.length;
   // Determine if daycare, school-age, or mixed is needed
   const careNeeds = useMemo(() => {

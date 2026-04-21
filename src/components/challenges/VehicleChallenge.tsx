@@ -35,9 +35,11 @@ interface VehicleOption {
 interface VehicleChallengeProps {
   onComplete: (data: any, score: number) => void;
   monthlyIncome: number;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function VehicleChallenge({ onComplete, monthlyIncome }: VehicleChallengeProps) {
+export default function VehicleChallenge({ onComplete, monthlyIncome, currentLeftover, blueprint }: VehicleChallengeProps) {
   const [options, setOptions] = useState<VehicleOption[]>([
     { id: '1', type: 'Car', makeModel: '', year: '', mileage: '', engine: 'gas', purchaseType: 'finance', term: '60', payment: '', insurance: '', maintenance: '', fuel: '' },
     { id: '2', type: 'SUV', makeModel: '', year: '', mileage: '', engine: 'hybrid', purchaseType: 'finance', term: '60', payment: '', insurance: '', maintenance: '', fuel: '' },

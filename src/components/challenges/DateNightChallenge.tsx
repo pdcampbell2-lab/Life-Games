@@ -16,15 +16,19 @@ import {
   Calendar,
   Wallet,
   Smile,
-  Users
+  Users,
+  CreditCard
 } from 'lucide-react';
 
 interface DateNightChallengeProps {
   onComplete: (data: any, score: number) => void;
   isSingle: boolean;
+  monthlyIncome?: number;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function DateNightChallenge({ onComplete, isSingle }: DateNightChallengeProps) {
+export default function DateNightChallenge({ onComplete, isSingle, monthlyIncome, currentLeftover, blueprint }: DateNightChallengeProps) {
   const [inputs, setInputs] = useState({
     startTime: '19:00',
     endTime: '22:30',

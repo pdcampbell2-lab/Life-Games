@@ -73,6 +73,17 @@ export function useSimulation(profile: LifeProfile) {
     }));
   };
 
+  const updateLiving = (livingUpdates: { groceries?: number; child_care?: number }) => {
+    setCurrentProfile(prev => ({
+      ...prev,
+      budget: {
+        ...prev.budget,
+        living_groceries: livingUpdates.groceries ?? prev.budget.living_groceries,
+        childcare: livingUpdates.child_care ?? prev.budget.childcare
+      }
+    }));
+  };
+
   const updateCreditCard = (card: any) => {
     setCurrentProfile(prev => ({
       ...prev,
@@ -303,7 +314,6 @@ export function useSimulation(profile: LifeProfile) {
 
     const newTransaction: Transaction = {
       id: Math.random().toString(),
-      date: `${state.current_year}-${String(state.current_month).padStart(2, '0')}-${String(state.current_day).padStart(2, '0')}`,
       amount: -amount,
       label,
       type: 'expense',
@@ -344,16 +354,22 @@ export function useSimulation(profile: LifeProfile) {
     updateBudget,
     updateHousing,
     updateTransportation,
+    updateLiving,
+    updateMeta,
     updateCreditCard,
     useCreditCard,
     makeCreditPayment,
-    updateMeta,
-    completeChallenge,
     manualTransaction,
+    completeChallenge,
     finalChallenge,
-    applyFinalChoice: (choiceId: string) => {
-      // Choice logic
+    applyFinalChoice: (choice: any) => {
+      setState(prev => ({
+        ...prev,
+        balance: prev.balance + (choice.balance_impact || 0),
+        is_completed: true
+      }));
       completeChallenge('FINAL_OUTCOME');
+      return (choice.outcome_text || choice.text) as string;
     }
   };
 }

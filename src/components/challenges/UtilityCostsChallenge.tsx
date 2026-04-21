@@ -18,9 +18,11 @@ interface UtilityCostsChallengeProps {
   onComplete: (data: { hydro: number; gas: number; water: number; utilityEfficiency: number }, score: number) => void;
   monthlyIncome: number;
   homeValue: number;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function UtilityCostsChallenge({ onComplete, monthlyIncome, homeValue }: UtilityCostsChallengeProps) {
+export default function UtilityCostsChallenge({ onComplete, monthlyIncome, homeValue, currentLeftover, blueprint }: UtilityCostsChallengeProps) {
   const [costs, setCosts] = useState({
     hydro: '',
     gas: '',

@@ -51,7 +51,10 @@ export default function StudentDashboard() {
     updateBudget,
     updateHousing,
     updateTransportation,
+    updateLiving,
     updateMeta,
+    updateCreditCard,
+    manualTransaction,
     completeChallenge,
     blueprints
   } = useSimulation(profile);
@@ -60,6 +63,12 @@ export default function StudentDashboard() {
   const partner = React.useMemo(() => {
     if (!currentProfile.household_id) return null;
     return MOCK_PROFILES.find(p => p.household_id === currentProfile.household_id && p.id !== currentProfile.id);
+  }, [currentProfile]);
+
+  const householdMonthlyIncome = React.useMemo(() => {
+    const p1 = currentProfile.budget.income_player_1;
+    const p2 = currentProfile.budget.income_player_2 || 0;
+    return (p1 + p2) * 2;
   }, [currentProfile]);
 
   React.useEffect(() => {
@@ -142,8 +151,8 @@ export default function StudentDashboard() {
                 updateMeta(meta);
                 completeChallenge('challenge_1', data);
               }} 
-              monthlyIncome={currentProfile.monthly_income}
-              currentLeftover={state.current_balance}
+              monthlyIncome={householdMonthlyIncome}
+              currentLeftover={state.balance}
               blueprint={blueprints['challenge_1']}
             />
             <button 
@@ -168,13 +177,10 @@ export default function StudentDashboard() {
           >
             <CellPhoneChallenge 
               onComplete={(data) => {
-                const { meta, ...budget } = data;
-                updateBudget(budget);
-                updateMeta(meta);
+                updateBudget(data);
                 completeChallenge('challenge_2', data);
               }} 
-              monthlyIncome={currentProfile.monthly_income}
-              currentLeftover={state.current_balance}
+              currentLeftover={state.balance}
               blueprint={blueprints['challenge_2']}
             />
             <button 
@@ -199,14 +205,12 @@ export default function StudentDashboard() {
           >
             <HousingChallenge 
               onComplete={(data) => {
-                const { meta, ...housing } = data;
-                updateHousing(housing);
-                updateMeta(meta);
+                updateHousing(data);
                 completeChallenge('challenge_3', data);
               }} 
-              monthlyIncome={currentProfile.monthly_income}
-              currentLeftover={state.current_balance}
-              hasPartner={currentProfile.has_partner}
+              monthlyIncome={householdMonthlyIncome}
+              currentLeftover={state.balance}
+              hasPartner={!!currentProfile.household_id}
               blueprint={blueprints['challenge_3']}
             />
             <button 
@@ -230,8 +234,9 @@ export default function StudentDashboard() {
             className="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-6"
           >
             <UtilityCostsChallenge 
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
               homeValue={currentProfile.budget.housing.property_value || 0}
+              currentLeftover={state.balance}
               onComplete={(data, score) => {
                 updateBudget({
                   hydro: data.hydro,
@@ -264,11 +269,15 @@ export default function StudentDashboard() {
             className="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-6"
           >
             <VehicleChallenge 
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
+              currentLeftover={state.balance}
               onComplete={(data, score) => {
-                const { meta, ...budget } = data;
-                updateTransportation(budget);
-                updateMeta(meta);
+                const { payment, insurance, fuel } = data;
+                updateTransportation({
+                  car_payment: Number(payment) || 0,
+                  car_insurance: Number(insurance) || 0,
+                  automobile_gas: Number(fuel) || 0
+                });
                 completeChallenge('challenge_5', data);
               }} 
               blueprint={blueprints['challenge_5']}
@@ -294,11 +303,12 @@ export default function StudentDashboard() {
             className="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-6"
           >
             <InsuranceChallenge 
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
               vehicleDescription={currentProfile.meta?.carDescription || 'Current Vehicle'}
+              currentLeftover={state.balance}
               onComplete={(data, score) => {
                 const { meta, insurance } = data;
-                updateTransportation({ insurance });
+                updateTransportation({ car_insurance: Number(insurance) || 0 });
                 updateMeta(meta);
                 completeChallenge('challenge_6', data);
               }} 
@@ -326,15 +336,15 @@ export default function StudentDashboard() {
             className="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-6"
           >
             <DrivingCostChallenge 
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
               vehicleMeta={{
                 year: parseInt(currentProfile.meta?.carDescription?.split(' ')[0] || '2020'),
                 description: currentProfile.meta?.carDescription || 'Current Vehicle',
                 engine: currentProfile.meta?.carEngine || 'gas'
               }}
               onComplete={(data, score) => {
-                const { meta, ...budget } = data;
-                updateTransportation(budget);
+                const { meta, gas } = data;
+                updateTransportation({ automobile_gas: Number(gas) || 0 });
                 updateMeta(meta);
                 completeChallenge('challenge_7', data);
               }} 
@@ -362,7 +372,7 @@ export default function StudentDashboard() {
             className="fixed inset-0 z-[150] bg-brand-950/60 backdrop-blur-md flex items-center justify-center p-6"
           >
             <CreditCardChallenge 
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
               onComplete={(data, score) => {
                 const { meta, card } = data;
                 updateCreditCard(card);
@@ -394,10 +404,9 @@ export default function StudentDashboard() {
           >
             <GroceryChallenge 
               householdSize={householdSize}
+              currentLeftover={state.balance}
               onComplete={(data, score) => {
-                const { meta, ...budget } = data;
-                updateBudget(budget);
-                updateMeta(meta);
+                updateLiving({ groceries: Number(data.total) || 0 });
                 completeChallenge('challenge_9', data);
               }} 
               blueprint={blueprints['challenge_9']}
@@ -425,13 +434,13 @@ export default function StudentDashboard() {
           >
             <ChildcareChallenge 
               children={currentProfile.children || []}
-              monthlyIncome={((currentProfile.budget.income_player_1 + (currentProfile.budget.income_player_2 || 0)) * 2)}
+              monthlyIncome={householdMonthlyIncome}
+              currentLeftover={state.balance}
               onComplete={(data, score) => {
-                const { meta, ...budget } = data;
-                updateBudget(budget);
-                updateMeta(meta);
+                updateLiving({ child_care: Number(data.monthly_total) || 0 });
                 completeChallenge('challenge_10', data);
               }} 
+              blueprint={blueprints['challenge_10']}
             />
             {/* GLOBAL MINIMIZE BUTTON */}
             <button 
@@ -456,12 +465,13 @@ export default function StudentDashboard() {
           >
             <DateNightChallenge 
               isSingle={isSingle}
+              monthlyIncome={householdMonthlyIncome}
               onComplete={(data, score) => {
-                const { amount, label, paymentMethod, meta } = data;
+                const { amount, label, paymentMethod } = data;
                 manualTransaction(amount, label, paymentMethod);
-                updateMeta(meta);
                 completeChallenge('challenge_11', data);
               }} 
+              blueprint={blueprints['challenge_11']}
             />
             
             {/* GLOBAL MINIMIZE BUTTON */}

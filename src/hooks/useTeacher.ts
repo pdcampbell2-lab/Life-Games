@@ -6,7 +6,8 @@ const INITIAL_TEACHER_STATE: TeacherState = {
   class_code: "LG-2026",
   is_game_paused: false,
   unlocked_challenge_index: 1,
-  assignments: {}
+  assignments: {},
+  blueprints: {}
 };
 
 export const useTeacher = () => {

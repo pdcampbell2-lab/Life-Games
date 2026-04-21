@@ -162,7 +162,7 @@ export default function GameModulePage() {
                 </div>
 
                 <div className="grid gap-4">
-                  {scenario.choices.map((choice, idx) => (
+                  {scenario.choices.map((choice: any, idx: number) => (
                     <button
                       key={choice.id}
                       disabled={showConsequence}

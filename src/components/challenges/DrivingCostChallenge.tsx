@@ -24,9 +24,11 @@ interface DrivingCostChallengeProps {
     description: string;
     engine: string;
   };
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function DrivingCostChallenge({ onComplete, monthlyIncome, vehicleMeta }: DrivingCostChallengeProps) {
+export default function DrivingCostChallenge({ onComplete, monthlyIncome, vehicleMeta, currentLeftover, blueprint }: DrivingCostChallengeProps) {
   const [inputs, setInputs] = useState({
     gasPrice: '',
     litresPerFill: '',

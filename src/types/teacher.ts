@@ -26,4 +26,5 @@ export interface TeacherState {
   is_game_paused: boolean;
   unlocked_challenge_index: number; // 1-11
   assignments: Record<string, StudentAssignment>; // student_name as key
+  blueprints?: Record<string, any>;
 }

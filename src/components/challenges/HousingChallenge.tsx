@@ -14,7 +14,8 @@ import {
   Building2,
   DollarSign,
   PieChart,
-  Info
+  Info,
+  Users
 } from 'lucide-react';
 
 interface HousingOption {
@@ -31,9 +32,11 @@ interface HousingChallengeProps {
   onComplete: (data: any, score: number) => void;
   monthlyIncome: number;
   hasPartner: boolean;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function HousingChallenge({ onComplete, monthlyIncome, hasPartner }: HousingChallengeProps) {
+export default function HousingChallenge({ onComplete, monthlyIncome, hasPartner, currentLeftover, blueprint }: HousingChallengeProps) {
   const [options, setOptions] = useState<HousingOption[]>([
     { id: '1', type: 'rent', location: '', monthlyCost: '', propertyValue: '', mortgageAmount: '', notes: '' },
     { id: '2', type: 'own', location: '', monthlyCost: '', propertyValue: '', mortgageAmount: '', notes: '' },

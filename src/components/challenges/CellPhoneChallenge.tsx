@@ -37,9 +37,10 @@ const PROVIDER_METADATA: Record<string, { tier: 'premium' | 'budget'; quality: n
 interface CellPhoneChallengeProps {
   onComplete: (data: { cell_phone: number; planDetail: string; planQuality: number }, score: number) => void;
   currentLeftover: number;
+  blueprint?: any;
 }
 
-export default function CellPhoneChallenge({ onComplete, currentLeftover }: CellPhoneChallengeProps) {
+export default function CellPhoneChallenge({ onComplete, currentLeftover, blueprint }: CellPhoneChallengeProps) {
   const [options, setOptions] = useState<PhoneOption[]>([
     { id: '1', provider: '', planName: '', cost: '', data: '', features: '' }
   ]);

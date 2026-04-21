@@ -34,9 +34,11 @@ interface InsuranceChallengeProps {
   onComplete: (data: any, score: number) => void;
   monthlyIncome: number;
   vehicleDescription: string;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function InsuranceChallenge({ onComplete, monthlyIncome, vehicleDescription }: InsuranceChallengeProps) {
+export default function InsuranceChallenge({ onComplete, monthlyIncome, vehicleDescription, currentLeftover, blueprint }: InsuranceChallengeProps) {
   const [options, setOptions] = useState<InsuranceOption[]>([
     { id: '1', provider: '', premium: '', deductible: '', collision: true, injury: true, liability: true, lifeAddon: false, length: '12', notes: '' },
     { id: '2', provider: '', premium: '', deductible: '', collision: false, injury: true, liability: true, lifeAddon: false, length: '12', notes: '' },

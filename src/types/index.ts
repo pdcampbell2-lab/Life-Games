@@ -9,12 +9,12 @@ export interface User {
 }
 
 export interface Expense {
-  id: string;
+  id?: string;
   label: string;
   amount: number;
-  type: 'fixed' | 'variable';
-  category: string;
-  day_of_month: number;
+  type?: 'fixed' | 'variable';
+  category?: string;
+  day_of_month?: number;
 }
 
 export interface Child {
@@ -118,6 +118,8 @@ export interface Choice {
   consequence: string;
   score_delta: number;
   next_scenario_id: string | 'end';
+  logic?: string;
+  reflection?: string;
 }
 
 export interface Scenario {

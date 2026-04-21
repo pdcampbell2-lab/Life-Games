@@ -27,9 +27,11 @@ interface CardOption {
 interface CreditCardChallengeProps {
   onComplete: (data: any, score: number) => void;
   monthlyIncome: number;
+  currentLeftover?: number;
+  blueprint?: any;
 }
 
-export default function CreditCardChallenge({ onComplete, monthlyIncome }: CreditCardChallengeProps) {
+export default function CreditCardChallenge({ onComplete, monthlyIncome, currentLeftover, blueprint }: CreditCardChallengeProps) {
   const [options, setOptions] = useState<CardOption[]>([
     { id: '1', companyName: '', cardType: 'Visa', annualFee: '', interestRate: '', perkDescription: '' },
     { id: '2', companyName: '', cardType: 'Mastercard', annualFee: '', interestRate: '', perkDescription: '' },
